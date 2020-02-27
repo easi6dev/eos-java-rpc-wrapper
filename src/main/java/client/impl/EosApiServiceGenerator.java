@@ -4,8 +4,10 @@ import client.exception.EosApiError;
 import client.exception.EosApiErrorCode;
 import client.exception.EosApiException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jakewharton.retrofit2.adapter.reactor.ReactorCallAdapterFactory;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
+import reactor.core.publisher.Mono;
 import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
@@ -31,7 +33,8 @@ public class EosApiServiceGenerator {
         builder = new Retrofit.Builder()
                 .client(client)
                 .addConverterFactory(ScalarsConverterFactory.create())
-                .addConverterFactory(JacksonConverterFactory.create(mapper));
+                .addConverterFactory(JacksonConverterFactory.create(mapper))
+                .addCallAdapterFactory(ReactorCallAdapterFactory.create());
     }
 
     private EosApiServiceGenerator() {
@@ -46,6 +49,22 @@ public class EosApiServiceGenerator {
      * Execute a REST call and block until the response is received.
      */
     public static <T> T executeSync(Call<T> call) {
+        try {
+            Response<T> response = call.execute();
+            if (response.isSuccessful()) {
+                return response.body();
+            } else {
+                EosApiError apiError = getEosApiError(response);
+                throw new EosApiException(apiError.getDetailedMessage(), EosApiErrorCode.get(apiError.getEosErrorCode()));
+            }
+        } catch (IOException e) {
+            throw new EosApiException(e);
+        }
+    }
+
+    public static <T> T executeAsync(Mono<T> call) {
+
+
         try {
             Response<T> response = call.execute();
             if (response.isSuccessful()) {

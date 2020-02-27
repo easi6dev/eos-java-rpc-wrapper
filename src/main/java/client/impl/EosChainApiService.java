@@ -10,6 +10,7 @@ import client.domain.response.chain.code.Code;
 import client.domain.response.chain.currencystats.CurrencyStats;
 import client.domain.response.chain.transaction.PushedTransaction;
 import client.domain.response.chain.transaction.ScheduledTransactionResponse;
+import reactor.core.publisher.Mono;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
@@ -22,10 +23,10 @@ import java.util.Map;
 public interface EosChainApiService {
 
     @GET("/v1/chain/get_info")
-    Call<ChainInfo> getChainInfo();
+    Mono<ChainInfo> getChainInfo();
 
     @POST("/v1/chain/get_block")
-    Call<Block> getBlock(@Body Map<String, String> requestFields);
+    Mono<Block> getBlock(@Body Map<String, String> requestFields);
 
     @POST("/v1/chain/get_account")
     Call<Account> getAccount(@Body Map<String, String> requestFields);
@@ -43,13 +44,13 @@ public interface EosChainApiService {
     Call<List<String>> getCurrencyBalance(@Body Map<String, String> requestFields);
 
     @POST("/v1/chain/abi_json_to_bin")
-    Call<AbiJsonToBin> abiJsonToBin(@Body AbiJsonToBinRequest abiJsonToBinRequest);
+    Mono<AbiJsonToBin> abiJsonToBin(@Body AbiJsonToBinRequest abiJsonToBinRequest);
 
     @POST("/v1/chain/abi_bin_to_json")
     Call<AbiBinToJson> abiBinToJson(@Body Map<String, String> requestFields);
 
     @POST("/v1/chain/push_transaction")
-    Call<PushedTransaction> pushTransaction(@Body PushTransactionRequest pushTransactionRequest);
+    Mono<PushedTransaction> pushTransaction(@Body PushTransactionRequest pushTransactionRequest);
 
     @Headers("Content-Type: application/json;charset=UTF-8")
     @POST("/v1/chain/push_transaction")

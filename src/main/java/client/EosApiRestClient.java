@@ -15,15 +15,16 @@ import client.domain.response.history.action.Actions;
 import client.domain.response.history.controlledaccounts.ControlledAccounts;
 import client.domain.response.history.keyaccounts.KeyAccounts;
 import client.domain.response.history.transaction.Transaction;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 import java.util.Map;
 
 public interface EosApiRestClient {
 
-    ChainInfo getChainInfo();
+    Mono<ChainInfo> getChainInfo();
 
-    Block getBlock(String blockNumberOrId);
+    Mono<Block> getBlock(String blockNumberOrId);
 
     Account getAccount(String accountName);
 
@@ -37,9 +38,9 @@ public interface EosApiRestClient {
 
     AbiBinToJson abiBinToJson(String code, String action, String binargs);
 
-    <T> AbiJsonToBin abiJsonToBin(String code, String action, T args);
+    <T> Mono<AbiJsonToBin> abiJsonToBin(String code, String action, T args);
 
-    PushedTransaction pushTransaction(String compression, SignedPackedTransaction packedTransaction);
+    Mono<PushedTransaction> pushTransaction(String compression, SignedPackedTransaction packedTransaction);
 
     PushedTransaction pushRawTransaction(String tx);
 
@@ -67,7 +68,7 @@ public interface EosApiRestClient {
 
     List<String> getPublicKeys();
 
-    SignedPackedTransaction signTransaction(PackedTransaction unsignedTransaction, List<String> publicKeys, String chainId);
+    Mono<SignedPackedTransaction> signTransaction(PackedTransaction unsignedTransaction, List<String> publicKeys, String chainId);
 
     void setWalletTimeout(Integer timeout);
 

@@ -2,6 +2,7 @@ package client.impl;
 
 import client.domain.common.transaction.SignedPackedTransaction;
 import client.domain.request.wallet.transaction.SignTransactionRequest;
+import reactor.core.publisher.Mono;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
@@ -48,6 +49,6 @@ public interface EosWalletApiService {
     Call<String> createKey(@Body List<String> parameters);
 
     @POST("/v1/wallet/sign_transaction")
-    Call<SignedPackedTransaction> signTransaction(@Body SignTransactionRequest unsignedTransaction);
+    Mono<SignedPackedTransaction> signTransaction(@Body SignTransactionRequest unsignedTransaction);
 
 }
